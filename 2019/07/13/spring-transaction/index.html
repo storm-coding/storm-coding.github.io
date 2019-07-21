@@ -5,22 +5,20 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>tes | blog</title>
+  <link rel="dns-prefetch" href="https://storm-coding.github.io">
+  <title>spring-transaction | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="hhhhhhhhhhhhhh">
+  <meta name="description" content="一次使用spring声明式事物遇到的问题工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性大致逻辑如下： 123456789101112131415161718192021222324">
 <meta property="og:type" content="article">
-<meta property="og:title" content="tes">
-<meta property="og:url" content="http://yoursite.com/2019/07/13/tes/index.html">
+<meta property="og:title" content="spring-transaction">
+<meta property="og:url" content="https://storm-coding.github.io/2019/07/13/spring-transaction/index.html">
 <meta property="og:site_name" content="blog">
-<meta property="og:description" content="hhhhhhhhhhhhhh">
+<meta property="og:description" content="一次使用spring声明式事物遇到的问题工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性大致逻辑如下： 123456789101112131415161718192021222324">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/07/13/tes/java-delete-in-for.png">
-<meta property="og:updated_time" content="2019-07-13T08:29:42.297Z">
+<meta property="og:updated_time" content="2019-07-13T15:23:52.101Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tes">
-<meta name="twitter:description" content="hhhhhhhhhhhhhh">
-<meta name="twitter:image" content="http://yoursite.com/2019/07/13/tes/java-delete-in-for.png">
+<meta name="twitter:title" content="spring-transaction">
+<meta name="twitter:description" content="一次使用spring声明式事物遇到的问题工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性大致逻辑如下： 123456789101112131415161718192021222324">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
   
@@ -162,28 +160,46 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-tes" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-spring-transaction" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      tes
+      spring-transaction
     </h1>
   
 
         
-        <a href="/2019/07/13/tes/" class="archive-article-date">
-  	<time datetime="2019-07-13T08:26:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-13</time>
+        <a href="/2019/07/13/spring-transaction/" class="archive-article-date">
+  	<time datetime="2019-07-13T11:04:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-13</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>hhhhhhhhhhhhhh</p>
-<p><img src="//yoursite.com/2019/07/13/tes/java-delete-in-for.png" alt="图片"></p>
+        <h2 id="一次使用spring声明式事物遇到的问题"><a href="#一次使用spring声明式事物遇到的问题" class="headerlink" title="一次使用spring声明式事物遇到的问题"></a>一次使用spring声明式事物遇到的问题</h2><p>工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：<br>最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性<br>大致逻辑如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Service</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> CommonResponse <span class="title">createOrUpdate</span><span class="params">(Model m)</span> </span>&#123;</span><br><span class="line">        dosomething()</span><br><span class="line">        create(m);</span><br><span class="line">        dosomething();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> CommonResponse <span class="title">create</span><span class="params">(Model m)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 获取分布式锁</span></span><br><span class="line">        RLock lock = redissonClient.getLock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (lock.tryLock(<span class="number">10</span>, <span class="number">10</span>, TimeUnit.SECONDS)) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Integer maxSort = dao.getMaxNum();</span><br><span class="line">                    maxSort = maxSort == <span class="keyword">null</span> ? <span class="number">0</span> : maxSort;</span><br><span class="line">                    m.setNum(maxSort + <span class="number">1</span>);</span><br><span class="line">                    createSize = mapper.insert(focusPicture);</span><br><span class="line">                    <span class="keyword">if</span> (createSize == <span class="number">1</span>) &#123;</span><br><span class="line">                        <span class="keyword">return</span> success;</span><br><span class="line">                    &#125; </span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    lock.unlock();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">return</span> fail;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中model可以理解为：class Model{int num}<br>大致意思就是，在插入的时候获取分布式锁，然后再进行插入。想要的效果是，最后的结果应该插入的顺序一样，num字段保持递增。<br>粗略的看了一下，好像没啥毛病，就写一个单元测试测一下，我写的单元测试如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test_wait_lock_release</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">     Service service = <span class="keyword">new</span> Service</span><br><span class="line">     Thread t1 = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">         <span class="keyword">try</span> &#123;</span><br><span class="line">             service.createOrUpdate(<span class="keyword">new</span> Model())</span><br><span class="line">         &#125; <span class="keyword">catch</span> (TException e) &#123;</span><br><span class="line">             e.printStackTrace();</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;);</span><br><span class="line"></span><br><span class="line">     Thread t2 = <span class="keyword">new</span> Thread(() -&gt; &#123;</span><br><span class="line">         <span class="keyword">try</span> &#123;</span><br><span class="line">             service.createOrUpdate(<span class="keyword">new</span> Model())</span><br><span class="line">         &#125; <span class="keyword">catch</span> (TException e) &#123;</span><br><span class="line">             e.printStackTrace();</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;);</span><br><span class="line">     t1.start();</span><br><span class="line">     t2.start();</span><br><span class="line">     t1.join();</span><br><span class="line">     t2.join();</span><br><span class="line">     assertTrue(listMaxNum(Model)`s size == <span class="number">1</span>)</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>为了保证出现锁等待，还改了一下业务代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (lock.tryLock(<span class="number">10</span>, <span class="number">10</span>, TimeUnit.SECONDS)) &#123;</span><br><span class="line">    Thread.sleep(<span class="number">500</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>在插入之前先等待500ms，保证第二线程等待在第一个线程之后，结果最后出现的结果num还真是一样的</strong></p>
+<p>这种问题竟然会出现在生产环境，当时那老哥估计都没对这种情况做过测试吧!!!当时可能没啥并发所以也没出现啥问题。不过好在是管理端，影响并不大</p>
+<p>那为啥会出现这样的问题呢？细看一下上面代码，service上加了spring的声明式事物，但是这个事物经过了两个方法，默认spring事物传播性质是共享一个事物的，但是加锁操作只对出现在create方法上。<strong>那么当create方法执行完finally里面释放锁，这个时候还没提交事物。</strong>第二个线程进来的时候获取到的是第一个线程还未提交的最大num。所以会出现相同num的情况。</p>
+<p>那么这样的话，应该改变一下spring的事物传播行为就好了默认的是Propagation.REQUIRED，即(如果有事物就加入当前事物，否则新创建一个事物)。<br>使用Propagation.REQUIRES_NEW(不管怎样都会新创建一个事物，如果已经存在事物了，会将当前的事物挂起)。这样的话createOrUpdate和create都是不同的事物了。</p>
+<p>结果改了之后，结果还是一样的，test case依旧没过。…. 是我哪里想错了吗。但是上面分析的思路应该是对的，应该是我对spring事物传播的性质理解错误了。为了验证之前的分析，把service上的事物注解去掉，再跑单元测试。结果这样test case就过了。这样说明我之前的分析是对的。那么把事物的传播特性设置为Propagation.REQUIRES_NEW为啥不能起到createOrUpdate和create是俩个不同事物的效果呢？</p>
+<p><a href https: docs.spring.io spring docs 5.1.8.release spring-framework-reference data-access.html#spring-data-tier"">查看spring的文档：</a></p>
+<blockquote>
+<p>   You can omit the transaction-manager attribute in the <a href="tx:annotation-driven/" target="_blank" rel="noopener">tx:annotation-driven/</a> tag if the bean name of the PlatformTransactionManager that you want to wire in has the name, transactionManager.<br>If the PlatformTransactionManager bean that you want to dependency-inject has any other name, you have to use the transaction-manager attribute, as in the preceding example.</p>
+</blockquote>
+<p>查看文档可知：spring的transaction只对public的方法起作用。改变了spring的传播行为，但是这两个方法还是同一个事物。</p>
+<p>解决方案：<br>1、增加锁的力度，对整个createOrUpdate方法进行加锁。<br>2、将整个create方法改成public，或者在另个service中调用create</p>
 
       
 
@@ -263,7 +279,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/13/tes/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://storm-coding.github.io/2019/07/13/spring-transaction/" alt="微信分享二维码">
     </div>
 </div>
 

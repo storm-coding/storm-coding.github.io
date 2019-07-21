@@ -5,23 +5,23 @@
   
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link rel="dns-prefetch" href="http://yoursite.com">
+  <link rel="dns-prefetch" href="https://storm-coding.github.io">
   <title>容器遍历中删除元素 | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Java 容器遍历中的删除之前只是模糊的知道，在java中使用for、增强for循环时不能进行删除操作。但是一直不知道是为什么。直到，最近在工作当中遇到，就决定分析一下这是什么原因。 普通for循环1234567891011List&amp;lt;String&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();list.add(&quot;a&quot;);list.add(&quot;b&quot;);list.add(&quot;">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="容器遍历中删除元素">
-<meta property="og:url" content="http://yoursite.com/2019/07/13/romve-in-collection/index.html">
+<meta property="og:url" content="https://storm-coding.github.io/2019/07/13/romve-in-collection/index.html">
 <meta property="og:site_name" content="blog">
 <meta property="og:description" content="Java 容器遍历中的删除之前只是模糊的知道，在java中使用for、增强for循环时不能进行删除操作。但是一直不知道是为什么。直到，最近在工作当中遇到，就决定分析一下这是什么原因。 普通for循环1234567891011List&amp;lt;String&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();list.add(&quot;a&quot;);list.add(&quot;b&quot;);list.add(&quot;">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/2019/07/13/romve-in-collection/java-delete-in-for.png">
+<meta property="og:image" content="https://storm-coding.github.io/2019/07/13/romve-in-collection/java-delete-in-for.png">
 <meta property="og:updated_time" content="2019-07-13T07:09:21.540Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="容器遍历中删除元素">
 <meta name="twitter:description" content="Java 容器遍历中的删除之前只是模糊的知道，在java中使用for、增强for循环时不能进行删除操作。但是一直不知道是为什么。直到，最近在工作当中遇到，就决定分析一下这是什么原因。 普通for循环1234567891011List&amp;lt;String&amp;gt; list = new ArrayList&amp;lt;&amp;gt;();list.add(&quot;a&quot;);list.add(&quot;b&quot;);list.add(&quot;">
-<meta name="twitter:image" content="http://yoursite.com/2019/07/13/romve-in-collection/java-delete-in-for.png">
+<meta name="twitter:image" content="https://storm-coding.github.io/2019/07/13/romve-in-collection/java-delete-in-for.png">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
   
@@ -190,7 +190,7 @@
 <a id="more"></a>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    rangeCheck(index);</span><br><span class="line"></span><br><span class="line">    modCount++;</span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">        System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                         numMoved);</span><br><span class="line">    elementData[--size] = <span class="keyword">null</span>; <span class="comment">// clear to let GC do its work</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>以上是ArrayList中的remove方法。由以上可以看出删除实际上是调用arraycopy的方法，将需要被删除的元素给覆盖掉了。所以当上面的remove执行完成的时候数组中实际的元素是这样的：[‘a’,’c’,’d’],确实是将数组的元素给删除了。但是有问题的也就是在这里：<strong>元素删除之后，循环变量的下标也加1了，但是现在c元素是在之前b元素的下标上</strong>。所以下一个遍历的元素就是dle，这样就跳过了元素c。如下图：<br><img src="//yoursite.com/2019/07/13/romve-in-collection/java-delete-in-for.png" alt="预览图"></p>
+<p>以上是ArrayList中的remove方法。由以上可以看出删除实际上是调用arraycopy的方法，将需要被删除的元素给覆盖掉了。所以当上面的remove执行完成的时候数组中实际的元素是这样的：[‘a’,’c’,’d’],确实是将数组的元素给删除了。但是有问题的也就是在这里：<strong>元素删除之后，循环变量的下标也加1了，但是现在c元素是在之前b元素的下标上</strong>。所以下一个遍历的元素就是dle，这样就跳过了元素c。如下图：<br><img src="//storm-coding.github.io/2019/07/13/romve-in-collection/java-delete-in-for.png" alt="预览图"></p>
 <p>也正是因为如此，如果在删除元素的时候我们不让索引下标自增的话就不会出现这样的情况,如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">list.add(<span class="string">"a"</span>);</span><br><span class="line">list.add(<span class="string">"b"</span>);</span><br><span class="line">list.add(<span class="string">"c"</span>);</span><br><span class="line">list.add(<span class="string">"d"</span>);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; list.size();) &#123;</span><br><span class="line">    System.out.println(list.get(i));</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">"b"</span>.equals(list.get(i))) &#123;</span><br><span class="line">        list.remove(i);</span><br><span class="line">        <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    i++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -304,7 +304,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/13/romve-in-collection/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=https://storm-coding.github.io/2019/07/13/romve-in-collection/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -318,11 +318,11 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/07/13/tes/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/07/13/spring-transaction/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          tes
+          spring-transaction
         
       </div>
     </a>
