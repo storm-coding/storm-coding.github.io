@@ -16,13 +16,13 @@
 <meta property="og:site_name" content="blog">
 <meta property="og:description" content="SpringMvc启动(1) 初始化ContextLoaderListener最近开始看SpringMvc的源码，记录一下自己学习过程。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:  之前在最开始的servlet中也是这样，需要在web.xml自己定义的servlet。这也是servlet2.5的规范，当然在servlet3中不需要xml，使用注解的方式也能实">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.png">
+<meta property="og:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg">
 <meta property="og:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/ContextLoaderListener-class-diagram.jpg">
-<meta property="og:updated_time" content="2019-09-08T13:36:40.070Z">
+<meta property="og:updated_time" content="2019-09-08T13:41:58.784Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringMvc启动之ContextLoaderListener">
 <meta name="twitter:description" content="SpringMvc启动(1) 初始化ContextLoaderListener最近开始看SpringMvc的源码，记录一下自己学习过程。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:  之前在最开始的servlet中也是这样，需要在web.xml自己定义的servlet。这也是servlet2.5的规范，当然在servlet3中不需要xml，使用注解的方式也能实">
-<meta name="twitter:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.png">
+<meta name="twitter:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
   
@@ -186,7 +186,7 @@
       
         <h2 id="SpringMvc启动-1-初始化ContextLoaderListener"><a href="#SpringMvc启动-1-初始化ContextLoaderListener" class="headerlink" title="SpringMvc启动(1) 初始化ContextLoaderListener"></a>SpringMvc启动(1) 初始化ContextLoaderListener</h2><p>最近开始看SpringMvc的源码，记录一下自己学习过程。</p>
 <h3 id="1、web-xml配置"><a href="#1、web-xml配置" class="headerlink" title="1、web.xml配置"></a>1、web.xml配置</h3><p>首先看在SpringMvc中的经典配置文件web.xml:</p>
-<p><img src="//storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.png" alt="预览图"></p>
+<p><img src="//storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg" alt="预览图"></p>
 <p>之前在最开始的servlet中也是这样，需要在web.xml自己定义的servlet。这也是servlet2.5的规范，当然在servlet3中不需要xml，使用注解的方式也能实现servlet的定义。详情参考: <a href="https://www.cnkirito.moe/servlet-explore/" target="_blank" rel="noopener">徐妈的Spring揭秘–寻找遗失的web.xml</a></p>
 <p>那么SpringMvc怎么整合servlet呢，就在上面的web.xml里面定义的监听器：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>classpath:application-context.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -450,11 +450,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">java</a>
+                <a href="javascript:void(0)" class="js-tag color2">java spring springMvc</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">java spring springMvc</a>
+                <a href="javascript:void(0)" class="js-tag color5">java</a>
               </li>
             
             <div class="clearfix"></div>
