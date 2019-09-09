@@ -6,23 +6,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://storm-coding.github.io">
-  <title>SpringMvc启动(1)之ContextLoaderListener | blog</title>
+  <title>Tag: spring | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前提最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
-<meta name="keywords" content="java,spring,springMvc">
-<meta property="og:type" content="article">
-<meta property="og:title" content="SpringMvc启动(1)之ContextLoaderListener">
-<meta property="og:url" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="blog">
+<meta property="og:url" content="https://storm-coding.github.io/tags/spring/index.html">
 <meta property="og:site_name" content="blog">
-<meta property="og:description" content="前提最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg">
-<meta property="og:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/ContextLoaderListener-class-diagram.jpg">
-<meta property="og:updated_time" content="2019-09-09T12:21:29.872Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SpringMvc启动(1)之ContextLoaderListener">
-<meta name="twitter:description" content="前提最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
-<meta name="twitter:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg">
+<meta name="twitter:title" content="blog">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
   
@@ -164,91 +156,36 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-springmvc-start-listener" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      SpringMvc启动(1)之ContextLoaderListener
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/09/04/springmvc-start-listener/" class="archive-article-date">
+  	<time datetime="2019-09-04T10:26:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-04</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2019/09/04/springmvc-start-listener/">SpringMvc启动(1)之ContextLoaderListener</a>
     </h1>
   
 
-        
-        <a href="/2019/09/04/springmvc-start-listener/" class="archive-article-date">
-  	<time datetime="2019-09-04T10:26:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h2><p>最近开始看SpringMvc的源码，记录一下自己学习过程。<br>首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。</p>
-<h3 id="1、web-xml配置"><a href="#1、web-xml配置" class="headerlink" title="1、web.xml配置"></a>1、web.xml配置</h3><p>首先看在SpringMvc中的经典配置文件web.xml:</p>
-<p><img src="//storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg" alt="预览图"></p>
-<a id="more"></a>
-
-<p>之前在最开始的servlet中也是这样，需要在web.xml自己定义的servlet。这也是servlet2.5的规范，当然在servlet3中不需要xml，使用注解的方式也能实现servlet的定义。详情参考: <a href="https://www.cnkirito.moe/servlet-explore/" target="_blank" rel="noopener">徐妈的Spring揭秘–寻找遗失的web.xml</a></p>
-<p>那么SpringMvc怎么整合servlet呢，就在上面的web.xml里面定义的监听器：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span>org.springframework.web.context.ContextLoaderListener<span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>classpath:application-context.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="2、初始化监听器：ContextLoaderListener"><a href="#2、初始化监听器：ContextLoaderListener" class="headerlink" title="2、初始化监听器：ContextLoaderListener"></a>2、初始化监听器：ContextLoaderListener</h3><p>ContextLoaderListener是spring-web中的一个类，他的类图为：<br><img src="//storm-coding.github.io/2019/09/04/springmvc-start-listener/ContextLoaderListener-class-diagram.jpg" alt="预览图"></p>
-<p>初始化的方法为：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextInitialized</span><span class="params">(ServletContextEvent event)</span> </span>&#123;</span><br><span class="line">    initWebApplicationContext(event.getServletContext());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>真正的初始化逻辑在父类ContextLoader中的initWebApplicationContext,大致流程如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> WebApplicationContext <span class="title">initWebApplicationContext</span><span class="params">(ServletContext servletContext)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.context == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 创建spring mvc的上下文环境默认(XmlWebApplicationContext)，只创建不初始化</span></span><br><span class="line">        <span class="keyword">this</span>.context = createWebApplicationContext(servletContext);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.context <span class="keyword">instanceof</span> ConfigurableWebApplicationContext) &#123;</span><br><span class="line">        ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) <span class="keyword">this</span>.context;</span><br><span class="line">        <span class="keyword">if</span> (!cwac.isActive()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cwac.getParent() == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 这里的loadParentContext(servletContext)返回null</span></span><br><span class="line">                ApplicationContext parent = loadParentContext(servletContext);</span><br><span class="line">                cwac.setParent(parent);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 执行容器刷新，这里做web上下文的初始化动作</span></span><br><span class="line">            configureAndRefreshWebApplicationContext(cwac, servletContext);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将初始化后的context，放入servletContext中,在这里初始化的是root webApplicationContext</span></span><br><span class="line">    servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, <span class="keyword">this</span>.context);</span><br><span class="line"></span><br><span class="line">    ClassLoader ccl = Thread.currentThread().getContextClassLoader();</span><br><span class="line">    <span class="keyword">if</span> (ccl == ContextLoader.class.getClassLoader()) &#123;</span><br><span class="line">        <span class="comment">//currentContext是volatile类型</span></span><br><span class="line">        currentContext = <span class="keyword">this</span>.context;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (ccl != <span class="keyword">null</span>) &#123;</span><br><span class="line">        currentContextPerThread.put(ccl, <span class="keyword">this</span>.context);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.context;</span><br><span class="line">		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>总结一下，在初始化中做的事情：<br>1、判断如果当前的webApplicationContext如果为null，就创建webApplicationContext，这里只是将对象创建出来;<br>2、如果初始化的容器为ConfigurableWebApplicationContext，并且状态是激活的，那么设置父容器和刷新容器，这里会进行对象的初始化；<br>3、将之前创建好的webApplicationContext放入当前线程的ClassLoad中</p>
-<h3 id="2-1、创建WebApplicationContext对象"><a href="#2-1、创建WebApplicationContext对象" class="headerlink" title="2.1、创建WebApplicationContext对象"></a>2.1、创建WebApplicationContext对象</h3><p>createWebApplicationContext创建WebApplicationContext</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> WebApplicationContext <span class="title">createWebApplicationContext</span><span class="params">(ServletContext sc)</span> </span>&#123;</span><br><span class="line">    Class&lt;?&gt; contextClass = determineContextClass(sc);</span><br><span class="line">    <span class="comment">// 反射实例化web上下文对象默认为(XmlWebApplicationContext),这里只是调用构造器创建对象，并进行没有初始化</span></span><br><span class="line">    <span class="keyword">return</span> (ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里做的主要是先找出要创建什么类型的WebApplicationContext,然后利用反射进行对象的创建</p>
-<h4 id="2-1-1-具体需要创建的WebApplicationContext类型"><a href="#2-1-1-具体需要创建的WebApplicationContext类型" class="headerlink" title="2.1.1 具体需要创建的WebApplicationContext类型"></a>2.1.1 具体需要创建的WebApplicationContext类型</h4><p>determineContextClass实际创建的WebApplicationContext类型</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; determineContextClass(ServletContext servletContext) &#123;</span><br><span class="line">    String contextClassName = servletContext.getInitParameter(CONTEXT_CLASS_PARAM);</span><br><span class="line">    <span class="keyword">if</span> (contextClassName != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> ClassUtils.forName(contextClassName, ClassUtils.getDefaultClassLoader());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// defaultStrategies 是一个静态属性，在类加载时初始化，这里得到的contextClassName是XmlWebApplicationContext</span></span><br><span class="line">        contextClassName = defaultStrategies.getProperty(WebApplicationContext.class.getName());</span><br><span class="line">            <span class="keyword">return</span> ClassUtils.forName(contextClassName, ContextLoader.class.getClassLoader());</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>首先看web.xml中配置的InitParam参数中是不是有contextClass的参数。我们上面是没有配的，那么就会找默认的WebApplicationContext进行创建。<br>defaultStrategies 是一个静态属性，在类加载时初始化:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_STRATEGIES_PATH = <span class="string">"ContextLoader.properties"</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Properties defaultStrategies;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 这个会读取ContextLoader.properties的文件</span></span><br><span class="line">        ClassPathResource resource = <span class="keyword">new</span> ClassPathResource(DEFAULT_STRATEGIES_PATH, ContextLoader.class);</span><br><span class="line">        defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Could not load 'ContextLoader.properties': "</span> + ex.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>而ContextLoader.properties中的内容为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.web.context.WebApplicationContext=org.springframework.web.context.support.XmlWebApplicationContext</span><br></pre></td></tr></table></figure>
-
-<p>因此，默认的WebApplicationContext为XmlWebApplicationContext。</p>
-<p>2.2、configureAndRefreshWebApplicationContext初始化WebApplicationContext</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configureAndRefreshWebApplicationContext</span><span class="params">(ConfigurableWebApplicationContext wac, ServletContext sc)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 设置WebApplicationContext的ServletContext</span></span><br><span class="line">    wac.setServletContext(sc);</span><br><span class="line">    <span class="comment">//CONFIG_LOCATION_PARAM = "contextConfigLocation";</span></span><br><span class="line">    String configLocationParam = sc.getInitParameter(CONFIG_LOCATION_PARAM);</span><br><span class="line">    <span class="comment">// 设置web context容器初始化参数的配置文件位置</span></span><br><span class="line">    <span class="keyword">if</span> (configLocationParam != <span class="keyword">null</span>) &#123;</span><br><span class="line">        wac.setConfigLocation(configLocationParam);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// TODO 设置WebApplicationContext的配置环境</span></span><br><span class="line">    ConfigurableEnvironment env = wac.getEnvironment();</span><br><span class="line">    <span class="keyword">if</span> (env <span class="keyword">instanceof</span> ConfigurableWebEnvironment) &#123;</span><br><span class="line">        ((ConfigurableWebEnvironment) env).initPropertySources(sc, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// TODO 自定义的web context的初始化 应该是servletContext配置的初始化类</span></span><br><span class="line">    customizeContext(sc, wac);</span><br><span class="line">    <span class="comment">// 这里就是初始化IOC容器</span></span><br><span class="line">    wac.refresh();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上面就是初始化WebApplicationContext的大致流程，主要就是wac.refresh()初始化spring ioc容器。这样就能在web容器(比如tomcat)启动时就能，启动spring容器。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>总的来说到这里其实主要是启动了Spring容器，而SpringMvc的大部分功能，并不在这(主要是在DispatcherServlet中)。因为SpringMvc作为一个建立在Spring基础上的web框架，所以必须先让Spring容器启动起来，SpringMvc才能真正起作用。</p>
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -268,106 +205,61 @@
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=https://storm-coding.github.io/2019/09/04/springmvc-start-listener/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
   
-<nav id="article-nav">
-  
-  
-    <a href="/2019/07/13/spring-transaction/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">一次使用spring声明式事物遇到的问题</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
+    
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/07/13/spring-transaction/" class="archive-article-date">
+  	<time datetime="2019-07-13T11:04:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-13</time>
+</a>
         </div>
-        
-        
-    </div>
-</aside>
-
-
-
+    	 
   
-  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2019/07/13/spring-transaction/">一次使用spring声明式事物遇到的问题</a>
+    </h1>
   
 
+        <div class="article-info info-on-right">
+          
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+          
+
+        </div>
+        <div class="clearfix"></div>
+    </header>
+  </div>
+</article>
+  
+  
+    </div></section>
   
 
-  
-
-  
+    
 
 
           </div>
@@ -390,9 +282,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
