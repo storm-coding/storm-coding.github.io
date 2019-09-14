@@ -6,22 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://storm-coding.github.io">
-  <title>SpringMvc启动(1)之ContextLoaderListener | blog</title>
+  <title>SpringMvc启动之ContextLoaderListener | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前提最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
-<meta name="keywords" content="java,spring,springMvc">
+  <meta name="description" content="背景最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
+<meta name="keywords" content="java,springMvc">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SpringMvc启动(1)之ContextLoaderListener">
+<meta property="og:title" content="SpringMvc启动之ContextLoaderListener">
 <meta property="og:url" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/index.html">
 <meta property="og:site_name" content="blog">
-<meta property="og:description" content="前提最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
+<meta property="og:description" content="背景最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg">
 <meta property="og:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/ContextLoaderListener-class-diagram.jpg">
-<meta property="og:updated_time" content="2019-09-09T12:21:29.872Z">
+<meta property="og:updated_time" content="2019-09-14T10:46:28.730Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SpringMvc启动(1)之ContextLoaderListener">
-<meta name="twitter:description" content="前提最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
+<meta name="twitter:title" content="SpringMvc启动之ContextLoaderListener">
+<meta name="twitter:description" content="背景最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
 <meta name="twitter:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
@@ -171,7 +171,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      SpringMvc启动(1)之ContextLoaderListener
+      SpringMvc启动之ContextLoaderListener
     </h1>
   
 
@@ -184,7 +184,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h2><p>最近开始看SpringMvc的源码，记录一下自己学习过程。<br>首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。</p>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近开始看SpringMvc的源码，记录一下自己学习过程。<br>首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。</p>
 <h3 id="1、web-xml配置"><a href="#1、web-xml配置" class="headerlink" title="1、web.xml配置"></a>1、web.xml配置</h3><p>首先看在SpringMvc中的经典配置文件web.xml:</p>
 <p><img src="//storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg" alt="预览图"></p>
 <a id="more"></a>
@@ -258,10 +258,6 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">springMvc</a>
         		</li>
       		
@@ -331,6 +327,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2019/09/09/springmvc-start-dispatcherServlet/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          SpringMvc启动之DispatcherServlet(1)
+        
+      </div>
+    </a>
   
   
     <a href="/2019/07/13/spring-transaction/" id="article-nav-older" class="article-nav-link-wrap">
@@ -464,11 +469,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">spring</a>
+                <a href="javascript:void(0)" class="js-tag color5">springMvc</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">springMvc</a>
+                <a href="javascript:void(0)" class="js-tag color2">spring</a>
               </li>
             
             <div class="clearfix"></div>

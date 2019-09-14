@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="https://storm-coding.github.io">
   <title>一次使用spring声明式事物遇到的问题 | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前提工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性大致逻辑如下： 12345678910111213141516171819202122232425262728@Transacti">
+  <meta name="description" content="背景工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性大致逻辑如下： 12345678910111213141516171819202122232425262728@Transacti">
 <meta name="keywords" content="java,spring">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一次使用spring声明式事物遇到的问题">
 <meta property="og:url" content="https://storm-coding.github.io/2019/07/13/spring-transaction/index.html">
 <meta property="og:site_name" content="blog">
-<meta property="og:description" content="前提工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性大致逻辑如下： 12345678910111213141516171819202122232425262728@Transacti">
+<meta property="og:description" content="背景工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性大致逻辑如下： 12345678910111213141516171819202122232425262728@Transacti">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-09T12:08:50.666Z">
+<meta property="og:updated_time" content="2019-09-09T13:09:51.840Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一次使用spring声明式事物遇到的问题">
-<meta name="twitter:description" content="前提工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性大致逻辑如下： 12345678910111213141516171819202122232425262728@Transacti">
+<meta name="twitter:description" content="背景工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性大致逻辑如下： 12345678910111213141516171819202122232425262728@Transacti">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
   
@@ -181,7 +181,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h2><p>工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：<br>最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性<br>大致逻辑如下：</p>
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>工作学习中一直都有使用spring的相关框架进行开发，而web方面的框架更甚。但最近就遇到了一个spring声明式事物的问题。场景：<br>最近接手的一个项目在生产环境遇到了一个问题，在一个不允许出现重复的字段出现了重复。因为这个字段没做唯一索引，在业务层保证字段值的唯一性<br>大致逻辑如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Transactional</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Service</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> CommonResponse <span class="title">createOrUpdate</span><span class="params">(Model m)</span> </span>&#123;</span><br><span class="line">        dosomething()</span><br><span class="line">        create(m);</span><br><span class="line">        dosomething();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> CommonResponse <span class="title">create</span><span class="params">(Model m)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 获取分布式锁</span></span><br><span class="line">        RLock lock = redissonClient.getLock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (lock.tryLock(<span class="number">10</span>, <span class="number">10</span>, TimeUnit.SECONDS)) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Integer maxSort = dao.getMaxNum();</span><br><span class="line">                    maxSort = maxSort == <span class="keyword">null</span> ? <span class="number">0</span> : maxSort;</span><br><span class="line">                    m.setNum(maxSort + <span class="number">1</span>);</span><br><span class="line">                    createSize = mapper.insert(focusPicture);</span><br><span class="line">                    <span class="keyword">if</span> (createSize == <span class="number">1</span>) &#123;</span><br><span class="line">                        <span class="keyword">return</span> success;</span><br><span class="line">                    &#125; </span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    lock.unlock();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">return</span> fail;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <a id="more"></a>
@@ -314,7 +314,7 @@
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          SpringMvc启动(1)之ContextLoaderListener
+          SpringMvc启动之ContextLoaderListener
         
       </div>
     </a>
@@ -451,11 +451,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">spring</a>
+                <a href="javascript:void(0)" class="js-tag color5">springMvc</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">springMvc</a>
+                <a href="javascript:void(0)" class="js-tag color2">spring</a>
               </li>
             
             <div class="clearfix"></div>

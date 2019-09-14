@@ -6,15 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://storm-coding.github.io">
-  <title>Tag: spring | blog</title>
+  <title>SpringMvc启动之DispatcherServlet(1) | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="blog">
-<meta property="og:url" content="https://storm-coding.github.io/tags/spring/index.html">
+  <meta name="description" content="背景在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎">
+<meta name="keywords" content="java,springMvc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringMvc启动之DispatcherServlet(1)">
+<meta property="og:url" content="https://storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/index.html">
 <meta property="og:site_name" content="blog">
+<meta property="og:description" content="背景在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/springMvc-web-xml.jpg">
+<meta property="og:image" content="https://storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/dispatcherServlet-class-diagram.jpg">
+<meta property="og:updated_time" content="2019-09-14T10:47:32.579Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="blog">
+<meta name="twitter:title" content="SpringMvc启动之DispatcherServlet(1)">
+<meta name="twitter:description" content="背景在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎">
+<meta name="twitter:image" content="https://storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/springMvc-web-xml.jpg">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
   
@@ -156,36 +164,80 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-springmvc-start-dispatcherServlet" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/07/13/spring-transaction/" class="archive-article-date">
-  	<time datetime="2019-07-13T11:04:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-13</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/13/spring-transaction/">一次使用spring声明式事物遇到的问题</a>
+    <h1 class="article-title" itemprop="name">
+      SpringMvc启动之DispatcherServlet(1)
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/09/09/springmvc-start-dispatcherServlet/" class="archive-article-date">
+  	<time datetime="2019-09-09T12:28:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎么进行初始化的呢。</p>
+<a id="more"></a>
+
+<p><img src="//storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/springMvc-web-xml.jpg" alt="预览图"></p>
+<h2 id="DispatcherServlet结构"><a href="#DispatcherServlet结构" class="headerlink" title="DispatcherServlet结构"></a>DispatcherServlet结构</h2><p>DispatcherServlet的类图如下，</p>
+<p><img src="//storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/dispatcherServlet-class-diagram.jpg" alt="预览图"></p>
+<h2 id="1-HttpServletBean-init"><a href="#1-HttpServletBean-init" class="headerlink" title="1.HttpServletBean.init()"></a>1.HttpServletBean.init()</h2><p>因为DispatcherServlet也是一个servlet，所以看这个流程还是蛮清爽的。在上面的类图中可以看到是HttpServletBean继承的HttpServlet。所以servlet的初始化会在init中进行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">    <span class="comment">// 获取配置的初始化参数</span></span><br><span class="line">    PropertyValues pvs = <span class="keyword">new</span> ServletConfigPropertyValues(getServletConfig(), <span class="keyword">this</span>.requiredProperties);</span><br><span class="line">    <span class="keyword">if</span> (!pvs.isEmpty()) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//TODO 将初始化参数转换成bean的包装类型BeanWrapper</span></span><br><span class="line">            BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(<span class="keyword">this</span>);</span><br><span class="line">            ResourceLoader resourceLoader = <span class="keyword">new</span> ServletContextResourceLoader(getServletContext());</span><br><span class="line">            bw.registerCustomEditor(Resource.class, <span class="keyword">new</span> ResourceEditor(resourceLoader, getEnvironment()));</span><br><span class="line">            initBeanWrapper(bw);</span><br><span class="line">            bw.setPropertyValues(pvs, <span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 子类的自定义的初始化</span></span><br><span class="line">    initServletBean();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>HttpServletBean的初始化主要干的事就是将，获取初始化参数，将DispatcherServlet转换成spring的BeanWrapper，然后将初始化的参数注入到BeanWrapper。最后在调用子类的初始化方法，这里也就是FrameworkServlet。</p>
+<h2 id="2-FrameworkServlet-initServletBean"><a href="#2-FrameworkServlet-initServletBean" class="headerlink" title="2.FrameworkServlet.initServletBean()"></a>2.FrameworkServlet.initServletBean()</h2><p>FrameworkServlet继承自HttpServletBean。是一个springMvc基础的servlet。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">initServletBean</span><span class="params">()</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">    <span class="comment">// web容器的初始化</span></span><br><span class="line">    <span class="keyword">this</span>.webApplicationContext = initWebApplicationContext();</span><br><span class="line">    <span class="comment">// 空方法，暂时没有实现</span></span><br><span class="line">    initFrameworkServlet();;		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-FrameworkServlet-initWebApplicationContext"><a href="#2-1-FrameworkServlet-initWebApplicationContext" class="headerlink" title="2.1 FrameworkServlet.initWebApplicationContext()"></a>2.1 FrameworkServlet.initWebApplicationContext()</h3><p>这里主要做web容器的初始化，这个和之前的start-listener中的WebApplicationContext不是一个容器，在start-listener初始化的是根容器。<br>在这里也会先找到根容器，然后将当前容器的父容器设置为根容器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> WebApplicationContext <span class="title">initWebApplicationContext</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    WebApplicationContext rootContext =</span><br><span class="line">				WebApplicationContextUtils.getWebApplicationContext(getServletContext());</span><br><span class="line">    WebApplicationContext wac = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// webApplicationContext 不为空的情况</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.webApplicationContext != <span class="keyword">null</span>) &#123;</span><br><span class="line">        wac = <span class="keyword">this</span>.webApplicationContext;</span><br><span class="line">        <span class="keyword">if</span> (wac <span class="keyword">instanceof</span> ConfigurableWebApplicationContext) &#123;</span><br><span class="line">            ConfigurableWebApplicationContext cwac = (ConfigurableWebApplicationContext) wac;</span><br><span class="line">            <span class="keyword">if</span> (!cwac.isActive()) &#123;</span><br><span class="line">                <span class="comment">// 设置父容器</span></span><br><span class="line">                <span class="keyword">if</span> (cwac.getParent() == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    cwac.setParent(rootContext);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 配置和初始化web容器</span></span><br><span class="line">                configureAndRefreshWebApplicationContext(cwac);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// web容器为空的情况先尝试去找servlet上下文中寻找，有没有已经存在的web应用上下文</span></span><br><span class="line">    <span class="keyword">if</span> (wac == <span class="keyword">null</span>) &#123;</span><br><span class="line">        wac = findWebApplicationContext();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 当前的servlet上下文中找不到的时候再进行创建web容器，默认会创建XmlWebApplicationContext</span></span><br><span class="line">    <span class="keyword">if</span> (wac == <span class="keyword">null</span>) &#123;</span><br><span class="line">        wac = createWebApplicationContext(rootContext);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.refreshEventReceived) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>.onRefreshMonitor) &#123;</span><br><span class="line">            <span class="comment">// 这里进行子类自定义的初始化</span></span><br><span class="line">            onRefresh(wac);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将当前已经初始化的web容器设置到servlet上下文中</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.publishContext) &#123;</span><br><span class="line">        String attrName = getServletContextAttributeName();</span><br><span class="line">        getServletContext().setAttribute(attrName, wac);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> wac;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里就是创建web容器，创建的流程会先判断是不是已经存在避免重复创建。不存在会先去当前的servlet中取寻找，没有才会创建默认是(XmlWebApplicationContext)容器，而这里的创建也是和start-listener中一样，只是创建，并不做初始化。而不管web容器是怎么获取的，最后都会调用configureAndRefreshWebApplicationContext进行web容器的配置和初始化。</p>
+<h3 id="2-2-FrameworkServlet-configureAndRefreshWebApplicationContext"><a href="#2-2-FrameworkServlet-configureAndRefreshWebApplicationContext" class="headerlink" title="2.2 FrameworkServlet.configureAndRefreshWebApplicationContext()"></a>2.2 FrameworkServlet.configureAndRefreshWebApplicationContext()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">configureAndRefreshWebApplicationContext</span><span class="params">(ConfigurableWebApplicationContext wac)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 设置web容器的id</span></span><br><span class="line">    <span class="keyword">if</span> (ObjectUtils.identityToString(wac).equals(wac.getId())) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.contextId != <span class="keyword">null</span>) &#123;</span><br><span class="line">            wac.setId(<span class="keyword">this</span>.contextId);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            wac.setId(ConfigurableWebApplicationContext.APPLICATION_CONTEXT_ID_PREFIX +</span><br><span class="line">                    ObjectUtils.getDisplayString(getServletContext().getContextPath()) + <span class="string">'/'</span> + getServletName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 一些参数的赋值</span></span><br><span class="line">    wac.setServletContext(getServletContext());</span><br><span class="line">    wac.setServletConfig(getServletConfig());</span><br><span class="line">    wac.setNamespace(getNamespace());</span><br><span class="line">    wac.addApplicationListener(<span class="keyword">new</span> SourceFilteringListener(wac, <span class="keyword">new</span> ContextRefreshListener()));</span><br><span class="line"></span><br><span class="line">    ConfigurableEnvironment env = wac.getEnvironment();</span><br><span class="line">    <span class="keyword">if</span> (env <span class="keyword">instanceof</span> ConfigurableWebEnvironment) &#123;</span><br><span class="line">        ((ConfigurableWebEnvironment) env).initPropertySources(getServletContext(), getServletConfig());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 在初始化之前的自定义初始化，暂无实现</span></span><br><span class="line">    postProcessWebApplicationContext(wac);</span><br><span class="line">    <span class="comment">// 初始化在servlet init-param中配置的ConfigurableApplicationContext</span></span><br><span class="line">    applyInitializers(wac);</span><br><span class="line">    <span class="comment">// 这里进行web容器真正的初始化动作</span></span><br><span class="line">    wac.refresh();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的初始化和之前爱start-listener中的web容器初始化类似，进行一些赋值和自定义的初始化之后，调用refresh进行spring Ioc的初始化。在web容器初始化之后就会调用onRefresh进行DispatcherServlet的初始化。</p>
+<h2 id="DispatcherServlet-onRefresh"><a href="#DispatcherServlet-onRefresh" class="headerlink" title="DispatcherServlet.onRefresh()"></a>DispatcherServlet.onRefresh()</h2><p>DispatcherServlet也是SpringMvc中非常核心的一个类，onRefresh主要也是做DispatcherServlet所需要的一些组件的初始化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onRefresh</span><span class="params">(ApplicationContext context)</span> </span>&#123;</span><br><span class="line">    initStrategies(context);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">initStrategies</span><span class="params">(ApplicationContext context)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//解析文件类型的multipartResolver</span></span><br><span class="line">    initMultipartResolver(context);</span><br><span class="line">    <span class="comment">//国际化解决方案组件</span></span><br><span class="line">    initLocaleResolver(context);</span><br><span class="line">    <span class="comment">//主题的组件</span></span><br><span class="line">    initThemeResolver(context);</span><br><span class="line">    <span class="comment">//这几个组件很核心，HandlerMappings，HandlerAdapters</span></span><br><span class="line">    initHandlerMappings(context);</span><br><span class="line">    initHandlerAdapters(context);</span><br><span class="line">    <span class="comment">//异常handle组件</span></span><br><span class="line">    initHandlerExceptionResolvers(context);</span><br><span class="line">    <span class="comment">//请求视图转换器</span></span><br><span class="line">    initRequestToViewNameTranslator(context);</span><br><span class="line">    <span class="comment">//视图解析器</span></span><br><span class="line">    initViewResolvers(context);</span><br><span class="line">    initFlashMapManager(context);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>initStrategies()就是dispatcherServlet主要的初始化流程了。其中最核心也是最常用的就是initHandlerMappings和initHandlerAdapters了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>到这里只是完成了dispatcherServlet初始化的一部分，主要是初始化dispatcherServlet的web容器。而dispatcherServlet中组件的初始化还并没涉及到。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -195,25 +247,121 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">springMvc</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2019/09/14/local-cache-md/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          local-cache.md
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2019/09/04/springmvc-start-listener/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">SpringMvc启动之ContextLoaderListener</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -236,9 +384,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
