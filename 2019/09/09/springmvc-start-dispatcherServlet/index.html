@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="https://storm-coding.github.io">
   <title>SpringMvc启动之DispatcherServlet(1) | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="背景在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎">
+  <meta name="description" content="前言在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎">
 <meta name="keywords" content="java,springMvc">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringMvc启动之DispatcherServlet(1)">
 <meta property="og:url" content="https://storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/index.html">
 <meta property="og:site_name" content="blog">
-<meta property="og:description" content="背景在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎">
+<meta property="og:description" content="前言在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/springMvc-web-xml.jpg">
 <meta property="og:image" content="https://storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/dispatcherServlet-class-diagram.jpg">
-<meta property="og:updated_time" content="2019-09-14T10:47:32.579Z">
+<meta property="og:updated_time" content="2019-09-15T02:17:23.970Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringMvc启动之DispatcherServlet(1)">
-<meta name="twitter:description" content="背景在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎">
+<meta name="twitter:description" content="前言在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎">
 <meta name="twitter:image" content="https://storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/springMvc-web-xml.jpg">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
@@ -184,7 +184,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎么进行初始化的呢。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在前面springMcv初始化(ContextLoaderListener)中提到，只初始化了spring，并没有进行springMvc方面的初始化。在之前的web.xml(如下图)中除了配置ContextLoaderListener，还有DispatcherServlet。而dispatcherServlet又是SpringMvc最核心的类。负责处理SpringMvc的大部分逻辑。那么它是怎么进行初始化的呢。</p>
 <a id="more"></a>
 
 <p><img src="//storm-coding.github.io/2019/09/09/springmvc-start-dispatcherServlet/springMvc-web-xml.jpg" alt="预览图"></p>

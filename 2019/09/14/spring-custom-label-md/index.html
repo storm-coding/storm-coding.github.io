@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://storm-coding.github.io">
-  <title>spring-custom-label.md | blog</title>
+  <title>Spring中实现自定义标签 | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Spring中实现自定义标签">
+  <meta name="description" content="前言在我们开发中用到的一些框架，经常会使用spring xml的形式来定义对象，利用spring的Ioc容器，来管理对象的生命周期。比如dubbo框架中一个常见的xml配置： 12345678910&amp;lt;beans xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;       xmlns:dubbo=&quot;http://dubbo.apach">
 <meta property="og:type" content="article">
-<meta property="og:title" content="spring-custom-label.md">
+<meta property="og:title" content="Spring中实现自定义标签">
 <meta property="og:url" content="https://storm-coding.github.io/2019/09/14/spring-custom-label-md/index.html">
 <meta property="og:site_name" content="blog">
-<meta property="og:description" content="Spring中实现自定义标签">
+<meta property="og:description" content="前言在我们开发中用到的一些框架，经常会使用spring xml的形式来定义对象，利用spring的Ioc容器，来管理对象的生命周期。比如dubbo框架中一个常见的xml配置： 12345678910&amp;lt;beans xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;       xmlns:dubbo=&quot;http://dubbo.apach">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-14T04:00:14.087Z">
+<meta property="og:updated_time" content="2019-09-15T02:38:36.669Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="spring-custom-label.md">
-<meta name="twitter:description" content="Spring中实现自定义标签">
+<meta name="twitter:title" content="Spring中实现自定义标签">
+<meta name="twitter:description" content="前言在我们开发中用到的一些框架，经常会使用spring xml的形式来定义对象，利用spring的Ioc容器，来管理对象的生命周期。比如dubbo框架中一个常见的xml配置： 12345678910&amp;lt;beans xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;       xmlns:dubbo=&quot;http://dubbo.apach">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
   
@@ -167,7 +167,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      spring-custom-label.md
+      Spring中实现自定义标签
     </h1>
   
 
@@ -180,7 +180,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Spring中实现自定义标签"><a href="#Spring中实现自定义标签" class="headerlink" title="Spring中实现自定义标签"></a>Spring中实现自定义标签</h2>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在我们开发中用到的一些框架，经常会使用spring xml的形式来定义对象，利用spring的Ioc容器，来管理对象的生命周期。比如dubbo框架中一个常见的xml配置：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:dubbo</span>=<span class="string">"http://dubbo.apache.org/schema/dubbo"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">       http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">"demo-consumer"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">"zookeeper://127.0.0.1:2181"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">"demoService"</span> <span class="attr">check</span>=<span class="string">"false"</span> <span class="attr">interface</span>=<span class="string">"org.apache.dubbo.demo.DemoService"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在这个配置中，就是dubbo扩展了spring的xml的标签，从而可以使用非常简单的方式来定义bean。那么spring中自定义标签的原理是什么呢</p>
+<h2 id="dubbo中的实现"><a href="#dubbo中的实现" class="headerlink" title="dubbo中的实现"></a>dubbo中的实现</h2><p>在上面的配置中定义了扩展schema的位置:<a href="http://dubbo.apache.org/schema/dubbo。点进去可以追踪到在dubbo中的位置。" target="_blank" rel="noopener">http://dubbo.apache.org/schema/dubbo。点进去可以追踪到在dubbo中的位置。</a></p>
+
       
 
       

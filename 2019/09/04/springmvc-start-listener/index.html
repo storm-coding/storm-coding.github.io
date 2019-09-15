@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="https://storm-coding.github.io">
   <title>SpringMvc启动之ContextLoaderListener | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="背景最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
+  <meta name="description" content="前言最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
 <meta name="keywords" content="java,springMvc">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringMvc启动之ContextLoaderListener">
 <meta property="og:url" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/index.html">
 <meta property="og:site_name" content="blog">
-<meta property="og:description" content="背景最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
+<meta property="og:description" content="前言最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg">
 <meta property="og:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/ContextLoaderListener-class-diagram.jpg">
-<meta property="og:updated_time" content="2019-09-14T10:46:28.730Z">
+<meta property="og:updated_time" content="2019-09-15T02:17:15.817Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringMvc启动之ContextLoaderListener">
-<meta name="twitter:description" content="背景最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
+<meta name="twitter:description" content="前言最近开始看SpringMvc的源码，记录一下自己学习过程。首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。 1、web.xml配置首先看在SpringMvc中的经典配置文件web.xml:">
 <meta name="twitter:image" content="https://storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
@@ -184,7 +184,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近开始看SpringMvc的源码，记录一下自己学习过程。<br>首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近开始看SpringMvc的源码，记录一下自己学习过程。<br>首先看SpringMvc启动的第一步，也就是我们在web.xml中配置的监听器ContextLoaderListener。</p>
 <h3 id="1、web-xml配置"><a href="#1、web-xml配置" class="headerlink" title="1、web.xml配置"></a>1、web.xml配置</h3><p>首先看在SpringMvc中的经典配置文件web.xml:</p>
 <p><img src="//storm-coding.github.io/2019/09/04/springmvc-start-listener/springMvc-web-xml.jpg" alt="预览图"></p>
 <a id="more"></a>
