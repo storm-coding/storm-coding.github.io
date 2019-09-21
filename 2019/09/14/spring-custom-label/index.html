@@ -6,15 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="https://storm-coding.github.io">
-  <title>Tag: java | blog</title>
+  <title>Spring中实现自定义标签 | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="blog">
-<meta property="og:url" content="https://storm-coding.github.io/tags/java/index.html">
+  <meta name="description" content="前言在我们开发中用到的一些框架，经常会使用spring xml的形式来定义对象，利用spring的Ioc容器，来管理对象的生命周期。比如dubbo框架中一个常见的xml配置：">
+<meta name="keywords" content="java,spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring中实现自定义标签">
+<meta property="og:url" content="https://storm-coding.github.io/2019/09/14/spring-custom-label/index.html">
 <meta property="og:site_name" content="blog">
+<meta property="og:description" content="前言在我们开发中用到的一些框架，经常会使用spring xml的形式来定义对象，利用spring的Ioc容器，来管理对象的生命周期。比如dubbo框架中一个常见的xml配置：">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://storm-coding.github.io/2019/09/14/spring-custom-label/spring-dubbo-schema.jpg">
+<meta property="og:updated_time" content="2019-09-21T01:53:32.153Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="blog">
+<meta name="twitter:title" content="Spring中实现自定义标签">
+<meta name="twitter:description" content="前言在我们开发中用到的一些框架，经常会使用spring xml的形式来定义对象，利用spring的Ioc容器，来管理对象的生命周期。比如dubbo框架中一个常见的xml配置：">
+<meta name="twitter:image" content="https://storm-coding.github.io/2019/09/14/spring-custom-label/spring-dubbo-schema.jpg">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
   
@@ -156,36 +163,95 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-spring-custom-label" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      Spring中实现自定义标签
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/14/spring-custom-label/" class="archive-article-date">
+
+        
+        <a href="/2019/09/14/spring-custom-label/" class="archive-article-date">
   	<time datetime="2019-09-14T03:58:30.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-14</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/14/spring-custom-label/">Spring中实现自定义标签</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在我们开发中用到的一些框架，经常会使用spring xml的形式来定义对象，利用spring的Ioc容器，来管理对象的生命周期。比如dubbo框架中一个常见的xml配置：</p>
+<a id="more"></a>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:dubbo</span>=<span class="string">"http://dubbo.apache.org/schema/dubbo"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">       http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">"demo-consumer"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">"zookeeper://127.0.0.1:2181"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">"demoService"</span> <span class="attr">check</span>=<span class="string">"false"</span> <span class="attr">interface</span>=<span class="string">"org.apache.dubbo.demo.DemoService"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-        <div class="article-info info-on-right">
-          
+<p>在这个配置中，就是dubbo扩展了spring的xml的标签，从而可以使用非常简单的方式来定义bean。那么spring中自定义标签的原理是什么呢</p>
+<h5 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h5><p>1、在dubbo中怎么定义和解析这些标签<br>2、spring又是怎么支持dubbo中的自定义标签的(主要以第二个问题为主)</p>
+<h2 id="dubbo实现spring的自定义标签"><a href="#dubbo实现spring的自定义标签" class="headerlink" title="dubbo实现spring的自定义标签"></a>dubbo实现spring的自定义标签</h2><p>在上面的配置中定义了扩展表桥的位置:<code>http://dubbo.apache.org/schema/dubbo</code>。点进去可以追踪到在dubbo中的位置，如下图：</p>
+<p><img src="//storm-coding.github.io/2019/09/14/spring-custom-label/spring-dubbo-schema.jpg" alt="预览图"><br>在对应位置还有spring.handlers和spring.schemas。这两个文件在spring启动是应该会自动读取。在spring.handlers里面定义的org.apache.dubbo.config.spring.schema.DubboNamespaceHandler，就应该是处理类了。在这里面定义了处理各种标签的逻辑。这样乍一看和Java中的SPI机制很像。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DubboNamespaceHandler</span> <span class="keyword">extends</span> <span class="title">NamespaceHandlerSupport</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        Version.checkDuplicate(DubboNamespaceHandler.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"application"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(ApplicationConfig.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"module"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(ModuleConfig.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"registry"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(RegistryConfig.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"config-center"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(ConfigCenterBean.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"metadata-report"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(MetadataReportConfig.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"monitor"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(MonitorConfig.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"metrics"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(MetricsConfig.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"provider"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(ProviderConfig.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"consumer"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(ConsumerConfig.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"protocol"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(ProtocolConfig.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"service"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(ServiceBean.class, <span class="keyword">true</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"reference"</span>, <span class="keyword">new</span> DubboBeanDefinitionParser(ReferenceBean.class, <span class="keyword">false</span>));</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">"annotation"</span>, <span class="keyword">new</span> AnnotationBeanDefinitionParser());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到这里大致能解决第一个问题，至于具体怎么解析那个标签的只要看对应的解析类即可。</p>
+<h2 id="spring中的实现"><a href="#spring中的实现" class="headerlink" title="spring中的实现"></a>spring中的实现</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">refresh</span><span class="params">()</span> <span class="keyword">throws</span> BeansException, IllegalStateException </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.prepareRefresh();</span><br><span class="line">    <span class="comment">// 在这里面会加载相关的bean 定义的xml</span></span><br><span class="line">    ConfigurableListableBeanFactory beanFactory = <span class="keyword">this</span>.obtainFreshBeanFactory();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>refresh()是beanFactory()的初始化方法，这里暂不详解(spring Ioc启动原理))。最终会调用AbstractXmlApplicationContext.loadBeanDefinitions()加载bean的定义转换成BeanDefinitions()。调用顺序为：AbstractApplicationContext.refresh()-&gt;AbstractApplicationContext.obtainFreshBeanFactory()-&gt;AbstractRefreshableApplicationContext.refreshBeanFactory()-&gt;AbstractXmlApplicationContext.loadBeanDefinitions();而自定义的标签也会在loadBeanDefinitions中被执行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">loadBeanDefinitions</span><span class="params">(DefaultListableBeanFactory beanFactory)</span> <span class="keyword">throws</span> BeansException, IOException </span>&#123;</span><br><span class="line">    XmlBeanDefinitionReader beanDefinitionReader = <span class="keyword">new</span> XmlBeanDefinitionReader(beanFactory);</span><br><span class="line">    <span class="comment">//设置beanDefinitionReader加载环境</span></span><br><span class="line">    beanDefinitionReader.setEnvironment(<span class="keyword">this</span>.getEnvironment());</span><br><span class="line">    beanDefinitionReader.setResourceLoader(<span class="keyword">this</span>);</span><br><span class="line">    beanDefinitionReader.setEntityResolver(<span class="keyword">new</span> ResourceEntityResolver(<span class="keyword">this</span>));</span><br><span class="line">    <span class="comment">// 初始化beanDefinitionReader</span></span><br><span class="line">    initBeanDefinitionReader(beanDefinitionReader);</span><br><span class="line">    loadBeanDefinitions(beanDefinitionReader);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在loadBeanDefinitions构造XmlBeanDefinitionReader对象，然后调用AbstractBeanDefinitionReader.loadBeanDefinitions()进行初始化。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">loadBeanDefinitions</span><span class="params">(String location, Set&lt;Resource&gt; actualResources)</span> <span class="keyword">throws</span> BeanDefinitionStoreException </span>&#123;</span><br><span class="line"> <span class="comment">// 加载我们配置javaBean的xml</span></span><br><span class="line">Resource[] resources = ((ResourcePatternResolver) resourceLoader).getResources(location);</span><br><span class="line"><span class="keyword">int</span> loadCount = loadBeanDefinitions(resources);           </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//XmlBeanDefinitionReader</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">loadBeanDefinitions</span><span class="params">(Resource... resources)</span> <span class="keyword">throws</span> BeanDefinitionStoreException </span>&#123;</span><br><span class="line">    Assert.notNull(resources, <span class="string">"Resource array must not be null"</span>);</span><br><span class="line">    <span class="keyword">int</span> counter = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (Resource resource : resources) &#123;</span><br><span class="line">        counter += loadBeanDefinitions(resource);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> counter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面是截取的相关代码，涉及到的主要操作主要有两个：<br>1、获取我们配置javaBean的xml<br>2、遍历获取到的xml文件，然后依次加载</p>
+<h3 id="XmlBeanDefinitionReader-doLoadBeanDefinitions"><a href="#XmlBeanDefinitionReader-doLoadBeanDefinitions" class="headerlink" title="XmlBeanDefinitionReader.doLoadBeanDefinitions"></a>XmlBeanDefinitionReader.doLoadBeanDefinitions</h3><p>XmlBeanDefinitionReader主要是加载在xml中定义的bean。这也符合我们最开始xml中的定义；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">doLoadBeanDefinitions</span><span class="params">(InputSource inputSource, Resource resource)</span><span class="keyword">throws</span> BeanDefinitionStoreException </span>&#123;</span><br><span class="line">    <span class="comment">// 将InputSource和resource转换成Document</span></span><br><span class="line">    Document doc = doLoadDocument(inputSource, resource);</span><br><span class="line">    <span class="comment">// 注册BeanDefinitions</span></span><br><span class="line">    <span class="keyword">return</span> registerBeanDefinitions(doc, resource);		</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在XmlBeanDefinitionReader.doLoadBeanDefinitions中，会进行注册BeanDefinitions。我们需要找到Spring加载自定标签文件应该也在这里面。继续往下看：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">registerBeanDefinitions</span><span class="params">(Document doc, Resource resource)</span> <span class="keyword">throws</span> BeanDefinitionStoreException </span>&#123;</span><br><span class="line">    <span class="comment">// 创建BeanDefinitionDocumentReader</span></span><br><span class="line">    BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();</span><br><span class="line">    <span class="keyword">int</span> countBefore = getRegistry().getBeanDefinitionCount();</span><br><span class="line">    <span class="comment">// 注册BeanDefinitions</span></span><br><span class="line">    documentReader.registerBeanDefinitions(doc, createReaderContext(resource));</span><br><span class="line">    <span class="keyword">return</span> getRegistry().getBeanDefinitionCount() - countBefore;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而我们需要找的就是在createReaderContext(resource)里面了。这里面的方法都比较简短，就将相关的逻辑放在一起了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> XmlReaderContext <span class="title">createReaderContext</span><span class="params">(Resource resource)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> XmlReaderContext(resource, <span class="keyword">this</span>.problemReporter, <span class="keyword">this</span>.eventListener,</span><br><span class="line">            <span class="keyword">this</span>.sourceExtractor, <span class="keyword">this</span>, getNamespaceHandlerResolver());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> NamespaceHandlerResolver <span class="title">getNamespaceHandlerResolver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.namespaceHandlerResolver == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.namespaceHandlerResolver = createDefaultNamespaceHandlerResolver();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.namespaceHandlerResolver;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">protected</span> NamespaceHandlerResolver <span class="title">createDefaultNamespaceHandlerResolver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> DefaultNamespaceHandlerResolver(getResourceLoader().getClassLoader());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，去看DefaultNamespaceHandlerResolver到底做了什么操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_HANDLER_MAPPINGS_LOCATION = <span class="string">"META-INF/spring.handlers"</span>;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">DefaultNamespaceHandlerResolver</span><span class="params">(ClassLoader classLoader)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(classLoader, DEFAULT_HANDLER_MAPPINGS_LOCATION);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，默认指定的路径就是META-INF/spring.handlers，这也是我们之前在dubbo项目中对应路径下配置文件有解析相应标签的逻辑。在DefaultNamespaceHandlerResolve主要是handlerMappings保存所有处理自定义标签的配置。</p>
+<h3 id="DefaultNamespaceHandlerResolve-getHandlerMappings"><a href="#DefaultNamespaceHandlerResolve-getHandlerMappings" class="headerlink" title="DefaultNamespaceHandlerResolve.getHandlerMappings()"></a>DefaultNamespaceHandlerResolve.getHandlerMappings()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">//懒加载获取所有spring.handlers中的配置信息</span><br><span class="line">private Map&lt;String, Object&gt; getHandlerMappings() &#123;</span><br><span class="line">    if (this.handlerMappings == null) &#123;</span><br><span class="line">        synchronized (this) &#123;</span><br><span class="line">            if (this.handlerMappings == null) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    // 加载所有指定classLoader下，指定路径的文件</span><br><span class="line">                    Properties mappings =</span><br><span class="line">                            PropertiesLoaderUtils.loadAllProperties(this.handlerMappingsLocation, this.classLoader);</span><br><span class="line">                    if (logger.isDebugEnabled()) &#123;</span><br><span class="line">                        logger.debug(&quot;Loaded NamespaceHandler mappings: &quot; + mappings);</span><br><span class="line">                    &#125;</span><br><span class="line">                    Map&lt;String, Object&gt; handlerMappings = new ConcurrentHashMap&lt;String, Object&gt;(mappings.size());</span><br><span class="line">                    CollectionUtils.mergePropertiesIntoMap(mappings, handlerMappings);</span><br><span class="line">                    this.handlerMappings = handlerMappings;</span><br><span class="line">                &#125;</span><br><span class="line">                catch (IOException ex) &#123;</span><br><span class="line">                    throw new IllegalStateException(</span><br><span class="line">                            &quot;Unable to load NamespaceHandler mappings from location [&quot; + this.handlerMappingsLocation + &quot;]&quot;, ex);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return this.handlerMappings;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在DefaultNamespaceHandlerResolve.getHandlerMappings()中主要是加载指定路径的文件。从上面也可以看出是通过classLoader来实现的。因为默认所有应用依赖的jar应该是同一个也就是AppClassLoader。<br>在DefaultNamespaceHandlerResolve实现了NamespaceHandlerResolver也就是会进行标签处理。</p>
+<h3 id="DefaultNamespaceHandlerResolve-resolve"><a href="#DefaultNamespaceHandlerResolve-resolve" class="headerlink" title="DefaultNamespaceHandlerResolve.resolve()"></a>DefaultNamespaceHandlerResolve.resolve()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> NamespaceHandler <span class="title">resolve</span><span class="params">(String namespaceUri)</span> </span>&#123;</span><br><span class="line">    Map&lt;String, Object&gt; handlerMappings = getHandlerMappings();</span><br><span class="line">    Object handlerOrClassName = handlerMappings.get(namespaceUri);</span><br><span class="line">    <span class="keyword">if</span> (handlerOrClassName == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (handlerOrClassName <span class="keyword">instanceof</span> NamespaceHandler) &#123;</span><br><span class="line">        <span class="keyword">return</span> (NamespaceHandler) handlerOrClassName;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        String className = (String) handlerOrClassName;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Class&lt;?&gt; handlerClass = ClassUtils.forName(className, <span class="keyword">this</span>.classLoader);</span><br><span class="line">            <span class="keyword">if</span> (!NamespaceHandler.class.isAssignableFrom(handlerClass)) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> FatalBeanException(<span class="string">"Class ["</span> + className + <span class="string">"] for namespace ["</span> + namespaceUri +</span><br><span class="line">                        <span class="string">"] does not implement the ["</span> + NamespaceHandler.class.getName() + <span class="string">"] interface"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            NamespaceHandler namespaceHandler = (NamespaceHandler)</span><br><span class="line">            <span class="comment">// 反射创建在第三方jar中配置的标签处理器</span></span><br><span class="line">            BeanUtils.instantiateClass(handlerClass);</span><br><span class="line">            namespaceHandler.init();</span><br><span class="line">            handlerMappings.put(namespaceUri, namespaceHandler);</span><br><span class="line">            <span class="keyword">return</span> namespaceHandler;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (ClassNotFoundException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> FatalBeanException(<span class="string">"NamespaceHandler class ["</span> + className + <span class="string">"] for namespace ["</span> +</span><br><span class="line">                    namespaceUri + <span class="string">"] not found"</span>, ex);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (LinkageError err) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> FatalBeanException(<span class="string">"Invalid NamespaceHandler class ["</span> + className + <span class="string">"] for namespace ["</span> +</span><br><span class="line">                    namespaceUri + <span class="string">"]: problem with handler class file or dependent class"</span>, err);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面可以看到，在处理标签时，会从handlerMappings中获得对应的NamespaceHandler。如果还没有初始化，也就是最开始是String，则会利用全路径名反射创建对象，然后进行初始化。再重新覆盖之前的handlerMappings的值。然后返回刚刚创建的NamespaceHandler对象。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总的来说自定义标签就是在spring指定到的目录中定义符合规范的描述，然后spring利用classLoader的机制加载对应classLoader下的所有jar。在使用的时候利用放射进行初始化。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -201,183 +267,115 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=https://storm-coding.github.io/2019/09/14/spring-custom-label/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/09/springmvc-start-dispatcherServlet/" class="archive-article-date">
-  	<time datetime="2019-09-09T12:28:47.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-09</time>
-</a>
+<nav id="article-nav">
+  
+    <a href="/2019/09/14/idea-debug/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          idea-debug.md
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/14/local-cache/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">local-cache.md</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/09/springmvc-start-dispatcherServlet/">SpringMvc启动之DispatcherServlet(1)</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">springMvc</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/04/springmvc-start-listener/" class="archive-article-date">
-  	<time datetime="2019-09-04T10:26:57.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-04</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/04/springmvc-start-listener/">SpringMvc启动之ContextLoaderListener</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">springMvc</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/07/13/spring-transaction/" class="archive-article-date">
-  	<time datetime="2019-07-13T11:04:48.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-13</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/13/spring-transaction/">一次使用spring声明式事物遇到的问题</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">spring</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/07/13/romve-in-collection/" class="archive-article-date">
-  	<time datetime="2019-07-13T03:00:15.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-13</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/13/romve-in-collection/">Java容器遍历中删除元素</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -400,9 +398,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
