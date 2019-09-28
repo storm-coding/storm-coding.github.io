@@ -8,17 +8,21 @@
   <link rel="dns-prefetch" href="https://storm-coding.github.io">
   <title>idea-debug.md | blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="Idea debug中的坑">
+  <meta name="description" content="Idea debug 问题前言在debug dubbo中想看看dubbo的自定义标签解析的文件在那加载的。中途遇到一个小问题：XmlBeanDefinitionReader.namespaceHandlerResolver保存的是所有的标签解析器。在XmlBeanDefinitionReader.getNamespaceHandlerResolver中被初始化。">
+<meta name="keywords" content="随笔">
 <meta property="og:type" content="article">
 <meta property="og:title" content="idea-debug.md">
 <meta property="og:url" content="https://storm-coding.github.io/2019/09/14/idea-debug/index.html">
 <meta property="og:site_name" content="blog">
-<meta property="og:description" content="Idea debug中的坑">
+<meta property="og:description" content="Idea debug 问题前言在debug dubbo中想看看dubbo的自定义标签解析的文件在那加载的。中途遇到一个小问题：XmlBeanDefinitionReader.namespaceHandlerResolver保存的是所有的标签解析器。在XmlBeanDefinitionReader.getNamespaceHandlerResolver中被初始化。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-21T01:50:55.972Z">
+<meta property="og:image" content="https://storm-coding.github.io/2019/09/14/idea-debug/idea-debug.jpg">
+<meta property="og:image" content="https://storm-coding.github.io/2019/09/14/idea-debug/idea-debug-toString.jpg">
+<meta property="og:updated_time" content="2019-09-28T03:32:01.458Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="idea-debug.md">
-<meta name="twitter:description" content="Idea debug中的坑">
+<meta name="twitter:description" content="Idea debug 问题前言在debug dubbo中想看看dubbo的自定义标签解析的文件在那加载的。中途遇到一个小问题：XmlBeanDefinitionReader.namespaceHandlerResolver保存的是所有的标签解析器。在XmlBeanDefinitionReader.getNamespaceHandlerResolver中被初始化。">
+<meta name="twitter:image" content="https://storm-coding.github.io/2019/09/14/idea-debug/idea-debug.jpg">
   
     <link rel="alternative" href="/atom.xml" title="blog" type="application/atom+xml">
   
@@ -180,7 +184,21 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="Idea-debug中的坑"><a href="#Idea-debug中的坑" class="headerlink" title="Idea debug中的坑"></a>Idea debug中的坑</h2>
+        <h2 id="Idea-debug-问题"><a href="#Idea-debug-问题" class="headerlink" title="Idea debug 问题"></a>Idea debug 问题</h2><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在debug dubbo中想看看dubbo的自定义标签解析的文件在那加载的。中途遇到一个小问题：XmlBeanDefinitionReader.namespaceHandlerResolver保存的是所有的标签解析器。在XmlBeanDefinitionReader.getNamespaceHandlerResolver中被初始化。</p>
+<a id="more"></a>
+
+<p>getNamespaceHandlerResolver</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> NamespaceHandlerResolver <span class="title">getNamespaceHandlerResolver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.namespaceHandlerResolver == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">this</span>.namespaceHandlerResolver = createDefaultNamespaceHandlerResolver();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.namespaceHandlerResolver;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">protected</span> NamespaceHandlerResolver <span class="title">createDefaultNamespaceHandlerResolver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> DefaultNamespaceHandlerResolver(getResourceLoader().getClassLoader());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建NamespaceHandlerResolver是调用DefaultNamespaceHandlerResolver的构造方法进行创建的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">DefaultNamespaceHandlerResolver</span><span class="params">(ClassLoader classLoader)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(classLoader, DEFAULT_HANDLER_MAPPINGS_LOCATION);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">DefaultNamespaceHandlerResolver</span><span class="params">(ClassLoader classLoader, String handlerMappingsLocation)</span> </span>&#123;</span><br><span class="line">    Assert.notNull(handlerMappingsLocation, <span class="string">"Handler mappings location must not be null"</span>);</span><br><span class="line">    <span class="keyword">this</span>.classLoader = (classLoader != <span class="keyword">null</span> ? classLoader : ClassUtils.getDefaultClassLoader());</span><br><span class="line">    <span class="keyword">this</span>.handlerMappingsLocation = handlerMappingsLocation;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的构造方法中没有。只有对classLoader和handlerMappingsLocation这俩个属性进行了赋值。结果debug中的视图：<img src="//storm-coding.github.io/2019/09/14/idea-debug/idea-debug.jpg" alt="预览图"><br>在图中可以看到，namespaceHandlerResolver.handlerMappings的属性也被赋值了。但是在构造器中明明没有对handlerMappings属性进行赋值的。那他在哪里被赋值的呢，在DefaultNamespaceHandlerResolver可以看到只有在getHandlerMappings中才有对handlerMappings的初始化在getHandlerMappings打的断点也并没有暂停。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Map&lt;String, Object&gt; <span class="title">getHandlerMappings</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.handlerMappings == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.handlerMappings == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Properties mappings =</span><br><span class="line">                            PropertiesLoaderUtils.loadAllProperties(<span class="keyword">this</span>.handlerMappingsLocation, <span class="keyword">this</span>.classLoader);</span><br><span class="line">                    <span class="keyword">if</span> (logger.isDebugEnabled()) &#123;</span><br><span class="line">                        logger.debug(<span class="string">"Loaded NamespaceHandler mappings: "</span> + mappings);</span><br><span class="line">                    &#125;</span><br><span class="line">                    Map&lt;String, Object&gt; handlerMappings = <span class="keyword">new</span> ConcurrentHashMap&lt;String, Object&gt;(mappings.size());</span><br><span class="line">                    CollectionUtils.mergePropertiesIntoMap(mappings, handlerMappings);</span><br><span class="line">                    <span class="keyword">this</span>.handlerMappings = handlerMappings;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                            <span class="string">"Unable to load NamespaceHandler mappings from location ["</span> + <span class="keyword">this</span>.handlerMappingsLocation + <span class="string">"]"</span>, ex);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.handlerMappings;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而getHandlerMappings 是一个private方法，调用的地方只有resolve和toString。那是不是idea在debug中是不是会自动执行toString方法呢。在google一番之后发现还真是，idea debug的时候会自动执行toString方法。设置如下：<br><img src="//storm-coding.github.io/2019/09/14/idea-debug/idea-debug-toString.jpg" alt="预览图"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>idea默认在debug的视图中会自动执行对象的toString方法。</p>
+
       
 
       
@@ -209,6 +227,17 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">随笔</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -419,6 +448,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">springMvc</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">随笔</a>
               </li>
             
             <div class="clearfix"></div>
