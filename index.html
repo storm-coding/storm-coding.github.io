@@ -179,7 +179,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前只知道数据的mvcc是多版本控制协议，但是并不知道它深层次的含义和实现。这次公司正好有过相关的培训，正好重新整理和学习一下。</p>
-<h2 id="知识背景"><a href="#知识背景" class="headerlink" title="知识背景"></a>知识背景</h2><h3 id="数据库ACID"><a href="#数据库ACID" class="headerlink" title="数据库ACID"></a>数据库ACID</h3><p>ACID是数据库四个基本的特性，其中A(原子性)和I(隔离性)都是由事物来保证的。一个事物中不会影响其他事物同时也是同时成功或失败的最小单位。</p>
+<h2 id="知识背景"><a href="#知识背景" class="headerlink" title="知识背景"></a>知识背景</h2><h3 id="数据库ACID"><a href="#数据库ACID" class="headerlink" title="数据库ACID"></a>数据库ACID</h3><p>ACID是数据库四个基本的特性，其中A(原子性)和I(隔离性)都是由事务来保证的。在一个事物中的改变不会影响其他正在进行的事物.同时也是成功或失败的最小单位。</p>
 <h3 id="事物的隔离级别"><a href="#事物的隔离级别" class="headerlink" title="事物的隔离级别"></a>事物的隔离级别</h3><table>
 <thead>
 <tr>
@@ -188,11 +188,11 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>read uncommitted</td>
+<td>Read uncommitted</td>
 <td>事物未提交就能读取，会产生脏读</td>
 </tr>
 <tr>
-<td>read committed</td>
+<td>Read committed</td>
 <td>事物提交之后能读取(不可重复读)，即一个事物中读取两次某一列可能存在不一致的情况</td>
 </tr>
 <tr>
@@ -204,8 +204,8 @@
 <td>读写都阻塞，锁级别最高，不会产生幻读</td>
 </tr>
 </tbody></table>
-<h2 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h2><p>我的理解mvcc是一个并发操作同一个数据的解决方案</p>
-
+<h2 id="MVCC"><a href="#MVCC" class="headerlink" title="MVCC"></a>MVCC</h2><p>事务隔离级别:Read committed和Repeatable read的实现原理就是MVCC。MVCC不是指特定的实现，而是一个使用无锁的方案解决并发问题的思想。其基本思想就是使用版本号的形式去控制在这个事务当中那些数据是可见的，从而达到提高并发度的效果。</p>
+<h3 id="Mysql-Mvcc实现原理"><a href="#Mysql-Mvcc实现原理" class="headerlink" title="Mysql Mvcc实现原理"></a>Mysql Mvcc实现原理</h3>
       
 
       
